@@ -1,0 +1,30 @@
+<html>
+<head>
+    <script src="signalr.min.js"></script>
+</head>
+<body>
+    <button onclick="AlertToAll()">AlertToAll</button>
+</body>
+</html>
+<script>
+    var connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:5076/hub",
+        {
+            //accessTokenFactory: () => token,
+            skipNegotiation: true,
+            transport: signalR.HttpTransportType.WebSockets
+        }).build();
+    connection.start();
+    connection.on("AlertEvent", function (res) {
+        alert(res);
+    });
+
+    function AlertToAll() {
+        connection.invoke("AllertToAll", "Hello").catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+
+    connection.on("HelloMessage", function (res) {
+        alert(res);
+    });
+</script>
